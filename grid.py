@@ -90,7 +90,7 @@ class greed:
 
         grid_map = mapping.made_map(length, width, object)
 
-        self.grid = [[Node(Vector(0, 0), numpy.zeros((1, 9)), standart_coefficient_array, numpy.zeros((9, 1)), numpy.zeros((9, 1)), decity)] * width] * length
+        self.grid = [[Node(Vector(0, 0), numpy.zeros((1, 9)), standart_coefficient_array, numpy.zeros((9, 1)), numpy.zeros((9, 1)), density)] * width] * length
 
         for i in range(length + 2):
             for j in range(width + 2):
@@ -114,9 +114,15 @@ class greed:
             self.grid[1][j + 1].calculate_distribution_function(self.R, self.T)
             self.grid[1][j + 1] = self.density
 
+            self.grid[self.length + 1][j + 1].macro_velocity = Vector(0, 0)            
+            self.grid[self.length + 1][j + 1].micro_velocity_array = numpy.array([0, 0, 0, 0, 0, 0, 0, 0, 0])
+            self.grid[self.length + 1][j + 1].Boltzmann_function = numpy.array([0, 0, 0, 0, 0, 0, 0, 0, 0]).transpose()
+            self.grid[self.length + 1][j + 1].calculate_distribution_function(self.R, self.T)
+            self.grid[self.length + 1][j + 1] = self.density
+            
+
         for i in range(self.length):
             for j in range(self.width):
-                
                 delta_f = self.grid[i + 1][j + 1].calculate_Boltzmann_function_around(self.t)
                 self.grid[i + 1][j + 1].Boltzmann_function[0][0] = delta_f[0][0]
                 self.grid[i + 2][j + 1].Boltzmann_function[1][0] = delta_f[1][0]
@@ -127,3 +133,22 @@ class greed:
                 self.grid[i][j].Boltzmann_function[6][0] = delta_f[6][0]
                 self.grid[i + 1][j].Boltzmann_function[7][0] = delta_f[7][0]
                 self.grid[i + 2][j].Boltzmann_function[8][0] = delta_f[8][0]
+
+        for i in range(self.length):
+            for j in range(self.width):
+                self.grid[i + 1][j + 1].calculate_density()
+                self.grid[i + 1][j + 1].calculate_macro_velocity()
+                self.grid[i + 1][j + 1].calculate_distribution_function(self.R, self.T)
+                self.grid[i + 1][j + 1].calculate_Boltzmann_function_in_this_node()
+
+    def print_data(self, output_filename):
+        with open(output_filename, 'w') as output_file:
+            for i in range(self.length):
+                for j in range(self.width):
+                    print(output_file, self.grid[i + 1][j + 1].macro_velocity, end = ' ')
+                
+                print()
+
+        print()
+        print()
+                
