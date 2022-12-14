@@ -1,14 +1,17 @@
-import grid
+from grid import Grid
 
 
 def main():
 
-    grid = grid.Grid(100, 50, -1, 1, 1, 1, 0.001)
+    grid = Grid(10, 10, -1, 1, 1, 1, 0.001)
+    output_file = open("output.txt", 'w')
 
     while True:
-        grid.modeling()
-        grid.print_data("output.txt")
-
+        grid.modeling(output_file)
+        print("modeling")
+        grid.print_data(output_file)
+        print("printing")
 
 if __name__ == "__main__":
     main()
+
