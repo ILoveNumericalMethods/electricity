@@ -54,7 +54,7 @@ BLUE2 = (50, 225, 255)
         self.screen.blit(text, [self.x + 5, self.y + 8])"""
 
 
-def menu0(screen):
+def menu_0(screen):
     #b1 = Button(screen, GREY, x01, y01, l01, h01, "Добавить объект")
     #buttons = [b1]
     #for b in buttons:
@@ -75,6 +75,8 @@ def menu0(screen):
         return 0"""
 
 def main():
+    #создать объект массива объектов
+    object_array = All_objects(600, 1200)
     global colored_arr
     #screen = pygame.display.set_mode((640, 480))
     screen = pygame.display.set_mode((WIDTH, HEIGHT))  # экран
@@ -90,8 +92,8 @@ def main():
     screen.fill(WHITE)
 
     while not done:
-        menu0(screen)
         for event in pygame.event.get():
+            menu_0(screen)
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -107,8 +109,11 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
-                        converting(text)
-                        colored_arr = coloring(calculating(objects))
+                        object_array.add_object(text, 600, 300) #добавили объект
+                        #object_array.make_scalar_field()
+                        colored_arr = coloring(object_array.make_scalar_field()) #рассчитали новый раскрашенный массив
+                        #converting(text)
+                        #colored_arr = coloring(calculating(objects))
                         text = ''
                     elif event.key == pygame.K_BACKSPACE:
                         text = text[:-1]
@@ -118,7 +123,7 @@ def main():
         # Render the current text.
         txt_surface = font.render(text, True, color)
         # Resize the box if the text is too long.
-        width = max(800, txt_surface.get_width()+10)
+        width = max(1200, txt_surface.get_width()+10)
         input_box.w = width
         # Blit the text.
         screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
