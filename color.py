@@ -4,7 +4,7 @@ import numpy as np
 c1='#00FFFF' #blue
 c2='#EE82EE' #purple
 
-def fadeColor(c1,c2,mix=0): #СЃРѕР·РґР°С‘С‚ Р»РёРЅРµР№РЅСѓСЋ РёРЅС‚РµСЂРїРѕР»СЏС†РёСЋ РѕС‚ С†РІРµС‚Р° СЃ1 РґРѕ С†РІРµС‚Р° СЃ2
+def fadeColor(c1,c2,mix=0): #создаёт линейную интерполяцию от цвета с1 до цвета с2
     assert len(c1)==len(c2)
     assert mix>=0 and mix<=1, 'mix='+str(mix)
     rgb1=np.array([int(c1[ii:ii+2],16) for ii in range(1,len(c1),2)])
@@ -15,16 +15,16 @@ def fadeColor(c1,c2,mix=0): #СЃРѕР·РґР°С‘С‚ Р»РёРЅРµР№РЅСѓСЋ РёРЅС‚РµСЂРїРѕР»СЏС
 
 def coloring (arr):
     """
-    СЃРѕР·РґР°С‘С‚ РјР°СЃСЃРёРІ СЃ С†РІРµС‚Р°РјРё РіСЂР°РґРёРµРЅС‚Р° РёР· РјР°СЃСЃРёРІР° СЃ РёРЅС‚РµРЅСЃРёРІРЅРѕСЃС‚СЊСЋ РїР°СЂР°РјРµС‚СЂР°
+    создаёт массив с цветами градиента из массива с интенсивностью параметра
 
-    :param arr: РґРІСѓРјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ СЃ РёРЅС‚РµРЅС‚СЃРёРІРЅРѕСЃС‚СЊСЋ РїР°СЂР°РјРµС‚СЂР°
-    :return coloured_arr: С‚СЂС‘С…РјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ, СЂР°СЃРєСЂР°С€РµРЅРЅС‹Р№ РіСЂР°РґРёРµРЅС‚РѕРј
+    :param arr: двумерный массив с интентсивностью параметра
+    :return coloured_arr: трёхмерный массив, раскрашенный градиентом
     """
-    coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype=int)
+    coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype = int)
     for x in range (arr.shape[0]):
         for y in range (arr.shape[1]):
             if arr[x][y]>-1:
-                color1 = fadeColor(c1,c2, arr[x][y]/1000) #С†РІРµС‚ РїРёРєСЃРµР»СЏ
+                color1 = fadeColor(c1,c2, arr[x][y]/1000) #цвет пикселя
                 r = int(color1[1:3], 16)
                 g = int(color1[3:5], 16)
                 bl = int(color1[5::], 16)

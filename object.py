@@ -6,17 +6,17 @@ from idetify import is_in_figure
 
 class Object:
     """
-    Р—Р°СЂСЏР¶РµРЅРЅРѕРµ С‚РµР»Рѕ
-    formula - С„РѕСЂРјСѓР»Р°, Р·Р°РґР°СЋС‰Р°СЏ С„РѕСЂРјСѓ
-    x - СЃРјРµС‰РµРЅРёРµ РїРѕ x РѕС‚ 0
-    y - СЃРјРµС‰РµРЅРёРµ РїРѕ y РѕС‚ 0
-    approx_circles - РїСЂРёР±Р»РёР¶РµРЅРёРµ С‚РµР»Р° С€Р°СЂР°РјРё
-    priority - РїСЂРёРѕРѕСЂРёС‚РµС‚ РґРѕСЃС‚СѓРїР° Рє РѕР±СЉРµРєС‚Сѓ 
+    Заряженное тело
+    formula - формула, задающая форму
+    x - смещение по x от 0
+    y - смещение по y от 0
+    approx_circles - приближение тела шарами
+    priority - приооритет доступа к объекту 
     """
 
     def __init__ (self, formula, x, y, width, heigth):
         """
-        РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+        Конструктор
         """
         self.formula = formula
         self.x = x
@@ -27,9 +27,9 @@ class Object:
 
     def make_approximation (self, heigth, width, start_x, start_y):
         """
-        Р¤СѓРЅРєС†РёСЏ РґРµР»Р°РµС‚ РїРµСЂРІС‹Р№ С€Р°Рі СЂРµРєСѓСЂСЃРёРё
+        Функция делает первый шаг рекурсии
         """
-        x, y, mass = self.find_СЃenter_of_mass(start_x, start_y, width, heigth)
+        x, y, mass = self.find_сenter_of_mass(start_x, start_y, width, heigth)
         
         if (self.is_point_in_unfilled_space(x, y) == 1):
             self.approx_circles.append(Circle(x, y, self.find_radius(x, y, min(width, heigth))))
@@ -43,11 +43,11 @@ class Object:
 
     def recurent_part_of_make_approximation (self, heigth, width, start_x, start_y, mass):
         """
-        Р РµРєСЂСЃРёРІРЅРѕРµ РїСЂРёР±Р»РёР¶РµРЅРёРµ С„РёРіСЂСѓС‹ С€Р°СЂР°РјРё
-        P - РґРѕР»СЏ РїРѕРєСЂС‹С‚РёСЏ РїСЂРё РєРѕС‚РѕСЂРѕРј РѕСЃС‚Р°РЅРѕРІС‚СЃСЏ СЂРµРєСѓСЂСЃРёСЏ
+        Рекрсивное приближение фигруы шарами
+        P - доля покрытия при котором остановтся рекурсия
         """
         P = 0.95
-        x, y, new_mass = self.find_СЃenter_of_mass(start_x, start_y, width, heigth)
+        x, y, new_mass = self.find_сenter_of_mass(start_x, start_y, width, heigth)
         
         if(new_mass <= mass * P):
             return
@@ -65,7 +65,7 @@ class Object:
     
     def is_point_in_unfilled_space (self, x, y):
         """
-        РџСЂРѕРІРµСЂРєР° РЅР°С…РѕР¶РґРЅРµРёСЏ С‚РѕС‡РєРё РІ РµС‰Рµ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕРј РїСЂРѕСЃС‚СЂР°СЃС‚РІРµ
+        Проверка нахожднеия точки в еще не заполненом прострастве
         """
         x = x - self.x
         y = y - self.y
@@ -79,27 +79,27 @@ class Object:
         return 1
     
         
-    def find_СЃenter_of_mass (self, start_x, start_y, distance_of_x, distance_of_y):
+    def find_сenter_of_mass (self, start_x, start_y, distance_of_x, distance_of_y):
         """
-        РС‰РµС‚ С†РµРЅС‚СЂ РјР°СЃСЃ С„РёРіСЂСѓС‹ РІ РїСЂСЏРјРѕСѓРіРѕР»СЊРєРёРєРµ СЃ Р»РµРІС‹Рј РІРµСЂС…РЅРёРј СѓРіР»РѕРј (start_x, start_y) Рё РґР»РёРЅР°РјРё СЃС‚РѕСЂРѕРЅ distance_of_x Рё distance_of_y
+        Ищет центр масс фигруы в прямоуголькике с левым верхним углом (start_x, start_y) и длинами сторон distance_of_x и distance_of_y
         """
-        СЃenter_of_mass_x = 0
-        СЃenter_of_mass_y = 0
+        сenter_of_mass_x = 0
+        сenter_of_mass_y = 0
         mass = 0
         for x in range(start_x, distance_of_x):
             for y in range(start_y, distance_of_y):
                 if ((is_in_figure(self.formula, x + self.x, y - self.y)) == 1):
-                    СЃenter_of_mass_x += x
-                    СЃenter_of_mass_y += y
+                    сenter_of_mass_x += x
+                    сenter_of_mass_y += y
                     mass += 1
-        return СЃenter_of_mass_x / mass, СЃenter_of_mass_y / mass, mass
+        return сenter_of_mass_x / mass, сenter_of_mass_y / mass, mass
 
 
     def find_radius (self, x, y, max_radius):
         """
-        РС‰РµС‚ СЂР°РґРёСѓСЃ РІРїРёСЃР°РЅРЅРѕР№ РѕРєСѓСЂР¶РЅРѕСЃС‚Рё
-        N - РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРѕРІРµСЂРѕРє
-        E - С‚РѕС‡РЅРѕСЃС‚СЊ РїРѕРґР±РѕСЂР° СЂР°РґРёСѓСЃР°
+        Ищет радиус вписанной окуржности
+        N - количество проверок
+        E - точность подбора радиуса
         """
         N = 100
         E = 0.1
@@ -125,8 +125,8 @@ class Object:
 
     def calculate_potential_in_that_point (self, x, y):
         """
-        Р¤СѓРЅРєС†РёСЏ СЃС‡РёС‚Р°С‚РµС‚ РїРѕС‚РЅС†РёР°Р» РІ СѓРєР°Р·Р°РЅРЅРѕР№ С‚РѕС‡РєРµ 
-        K - РЅРѕСЂРјРёСЂРѕРІРѕС‡РЅР°СЏ РїРѕСЃС‚РѕСЏРЅРЅР°СЏ
+        Функция считатет потнциал в указанной точке 
+        K - нормировочная постоянная
         """
         K = 1
         
@@ -143,14 +143,14 @@ class Object:
 
 class All_objects:
     """
-    Р’СЃРµ РѕР±СЉРµРєС‚С‹ Рё СЂР°Р±РѕС‚Р° СЃ РЅРёРјРё
-    all_objects - РјР°СЃСЃРёРІ РѕР±СЉРµРєС‚РѕРІ
-    width - С€РёСЂРёРЅР° СЌРєСЂР°РЅР°
-    height - РІС‹СЃРѕС‚Р° СЌРєСЂР°РЅР°
+    Все объекты и работа с ними
+    all_objects - массив объектов
+    width - ширина экрана
+    height - высота экрана
     """
     def __init__ (self, height, width):
         """
-        РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+        Конструктор
         """
         self.height = height
         self.width = width
@@ -159,7 +159,7 @@ class All_objects:
 
     def find_best_object (self, x, y):
         """
-        РС‰РµС‚ РѕР±СЉРµРєС‚ СЃ РЅР°РёРІС‹СЃС€РёРј РїСЂРёРѕСЂРёС‚РµС‚РѕРј
+        Ищет объект с наивысшим приоритетом
         """
         for index in range(len(self.all_objects)):
             best_priority = 1e9
@@ -173,7 +173,7 @@ class All_objects:
 
     def add_object (self, formula, x, y):
         """
-        Р”РѕР±Р°РІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ РјР°СЃСЃРёРІ
+        Добавление объекта в массив
         """
         self.all_objects.append(Object(formula, x ,y, self.width, self.height))
         
@@ -182,7 +182,7 @@ class All_objects:
 
     def delete_object (self, x, y):
         """
-        РЈРґР°Р»РµРЅРёРµ РѕР±СЉРµРєС‚Р° РёР· РјР°СЃРёРІР°
+        Удаление объекта из масива
         """       
         if (self.find_best_object(x, y) != -1):
             self.all_objects.pop(self.find_best_object(x, y))
@@ -190,7 +190,7 @@ class All_objects:
         
     def move_object (self, x_from, y_from, x_to, y_to):
         """
-        РџРµСЂРµРјРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚Р°
+        Перемещение объекта
         """
         index = self.find_best_object(x_from, y_from)
         if (index != -1):
@@ -203,7 +203,7 @@ class All_objects:
     
     def make_scalar_field (self, output_file):
         """
-        РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃРєР°Р»СЏСЂРЅРѕРіРѕ РїРѕР»СЏ
+        Построение скалярного поля
         """
         for y in range(self.height):
             for x in range(self.width):

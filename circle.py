@@ -2,18 +2,20 @@ from math import pi
 
 class Circle:
     """
-    РљР»Р°СЃСЃ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё
-    charge - Р·Р°СЂСЏРґ
-    x - РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ x
-    y - РєРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ y
-    radius - СЂР°РґРёСѓСЃ
+    Класс окружности
+    charge - заряд
+    x - координата по x
+    y - координата по y
+    radius - радиус
     """
 
     def __init__ (self, x, y, radius):
         """
-        РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ
+        Конструктор
         """
         self.radius = radius
         self.charge = pi * self.radius ** 2
         self.x = x
         self.y = y
+
+
