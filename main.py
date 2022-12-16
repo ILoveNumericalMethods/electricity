@@ -1,12 +1,12 @@
 import pygame
+from draw import draw
 import tkinter
 from tkinter.filedialog import *
 import sys
 from color import *
-from converting_formulas import *
-from model import *
+from Object import *
 # размеры экрана
-WIDTH = 1250
+WIDTH = 1260
 HEIGHT = 700
 
 colored_arr = [0] * 120  # дефолтный раскрашенный массив
@@ -75,8 +75,10 @@ def menu_0(screen):
         return 0"""
 
 def main():
+    black_screen_x = (15, 1215)
+    black_screen_y = (60, 660)
     #создать объект массива объектов
-    object_array = All_objects(600, 1200)
+    object_array = All_objects(black_screen_x[1] - black_screen_x[0], black_screen_y[1] - black_screen_y[0])
     global colored_arr
     #screen = pygame.display.set_mode((640, 480))
     screen = pygame.display.set_mode((WIDTH, HEIGHT))  # экран
@@ -89,7 +91,11 @@ def main():
     active = False
     text = ''
     done = False
+    moving_object = False
+    is_scalar_field = True
     screen.fill(WHITE)
+    start_position = (0, 0)
+
 
     while not done:
         for event in pygame.event.get():
@@ -97,28 +103,37 @@ def main():
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
-                #mouse0(event)
                 # If the user clicked on the input_box rect.
                 if input_box.collidepoint(event.pos):
                     # Toggle the active variable.
                     active = not active
+                elif(event.pos[0] >= black_screen_x[0] and event.pos[0] <= black_screen_x[1] and event.pos[1] >= black_screen_y[0] and event.pos[1] <= black_screen_y[1]):
+                    start_position = event.pos
+                    moving_object = True
+                    active = False
                 else:
                     active = False
                 # Change the current color of the input box.
                 color = color_active if active else color_inactive
+            if event.type == pygame.MOUSEBUTTONUP:
+                if (moving_object):
+                    object_array.move_object(start_position[0], start_position[1], event.pos[0], event.pos[1])
+                    moving_object = False
+                    draw(object_array.make_scalar_field(), is_scalar_field, screen, black_screen_x, black_screen_y)
             if event.type == pygame.KEYDOWN:
                 if active:
                     if event.key == pygame.K_RETURN:
-                        object_array.add_object(text, 600, 300) #добавили объект
-                        #object_array.make_scalar_field()
-                        colored_arr = coloring(object_array.make_scalar_field()) #рассчитали новый раскрашенный массив
-                        #converting(text)
-                        #colored_arr = coloring(calculating(objects))
+                        object_array.add_object(text, int((black_screen_x[1] - black_screen_x[0]) / 2), int((black_screen_y[1] - black_screen_y[0]) / 2)) #добавили объект
+                        draw(object_array.make_scalar_field(), is_scalar_field, screen, black_screen_x, black_screen_y)
                         text = ''
                     elif event.key == pygame.K_BACKSPACE:
                         text = text[:-1]
+                    elif (event.key == pygame.K_SPACE):
+                        is_scalar_field = not is_scalar_field
+                        draw(object_array.make_scalar_field(), is_scalar_field, screen, black_screen_x, black_screen_y)
                     else:
                         text += event.unicode
+
         pygame.draw.rect(screen, WHITE, pygame.Rect(15, 10, 500, 32))
         # Render the current text.
         txt_surface = font.render(text, True, color)

@@ -1,7 +1,7 @@
 from math import pi
 from math import cos
 from math import sin
-from circle import Circle
+from Circle import Circle
 from idetify import is_in_figure
 
 class Object:
