@@ -1,20 +1,10 @@
 import pygame
 from draw import draw
-import tkinter
-from tkinter.filedialog import *
-import sys
-from color import *
 from Object import *
+
 # размеры экрана
 WIDTH = 1260
 HEIGHT = 700
-
-colored_arr = [0] * 120  # дефолтный раскрашенный массив
-for i in range(120):
-    colored_arr[i] = [0] * 240
-for i in range(120):
-    for j in range(240):
-        colored_arr[i][j] = [0] * 3
 
 # цвета
 RED = (255, 0, 0)
@@ -29,58 +19,11 @@ GREY = (200, 200, 200)
 SKY = (210, 255, 255)
 BLUE2 = (50, 225, 255)
 
-# параметры кнопок главного меню 0
-#x01 = 1060
-#y01 = 10
-#l01 = 120
-#h01 = 25
-
-
-"""class Button:  # класс кнопки
-    def __init__(self, screen: pygame.Surface, color=GREY, x=0, y=0, w=0, h=0, text="", move=0):  # конструктор
-        self.screen = screen
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-        self.color = color
-        self.text = text
-        self.move = move
-
-    def draw(self):  # отрисовка
-        pygame.draw.rect(self.screen, self.color, pygame.Rect(self.x, self.y, self.w, self.h))
-        font = pygame.font.Font(None, 20)
-        text = font.render(self.text, True, BLACK)
-        self.screen.blit(text, [self.x + 5, self.y + 8])"""
-
-
-def menu_0(screen):
-    #b1 = Button(screen, GREY, x01, y01, l01, h01, "Добавить объект")
-    #buttons = [b1]
-    #for b in buttons:
-        #b.draw()
-    for i in range(120):
-        for j in range(240):
-            pygame.draw.rect(screen, (colored_arr[i][j][0], colored_arr[i][j][1], colored_arr[i][j][2]),
-                             pygame.Rect(j * 5 + 15, i * 5 + 60, 5, 5))
-    pygame.display.update()  # обновление экрана
-
-"""def mouse0(event): #отработка кнопок меню 0
-    global objects
-    global colored_arr
-    if event.pos[0] >= x01 and event.pos[0] <=x01+l01 and event.pos[1] >= y01 and event.pos[1] <= y01+h01:
-        converting("string_formula")
-        colored_arr = coloring(calculating(objects))
-    else:
-        return 0"""
-
 def main():
-    black_screen_x = (15, 1215)
-    black_screen_y = (60, 660)
+    black_screen_x = (15, 1215) #координата x левого и правого краёв чёрного экрана
+    black_screen_y = (60, 660) #координата y верхнего и нижнего краёв чёрного экрана
     #создать объект массива объектов
     object_array = All_objects(black_screen_x[1] - black_screen_x[0], black_screen_y[1] - black_screen_y[0])
-    global colored_arr
-    #screen = pygame.display.set_mode((640, 480))
     screen = pygame.display.set_mode((WIDTH, HEIGHT))  # экран
     font = pygame.font.Font(None, 32)
     clock = pygame.time.Clock()
@@ -96,10 +39,8 @@ def main():
     screen.fill(WHITE)
     start_position = (0, 0)
 
-
     while not done:
         for event in pygame.event.get():
-            menu_0(screen)
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -107,9 +48,10 @@ def main():
                 if input_box.collidepoint(event.pos):
                     # Toggle the active variable.
                     active = not active
+                # если машь нажата на чёрном экране
                 elif(event.pos[0] >= black_screen_x[0] and event.pos[0] <= black_screen_x[1] and event.pos[1] >= black_screen_y[0] and event.pos[1] <= black_screen_y[1]):
                     start_position = event.pos
-                    moving_object = True
+                    moving_object = True #флаг перемещения объекта
                     active = False
                 else:
                     active = False
