@@ -15,11 +15,12 @@ def fadeColor(c1,c2,mix=0): #создаЄт линейную интерпол€цию от цвета с1 до цвета 
 
 def coloring (arr):
     """
-    создаЄт массив с цветами градиента из массива с интенсивностью параметра
+    creates an array with gradient colours from an array with parameter intensities
 
-    :param arr: двумерный массив с интентсивностью параметра
-    :return coloured_arr: трЄхмерный массив, раскрашенный градиентом
+    accepts a two-dimensional array with the parameter intensity
+    returns a three dimensional array coloured with the gradient
     """
+
     coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype = int)
     for x in range (arr.shape[0]):
         for y in range (arr.shape[1]):

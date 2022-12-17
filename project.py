@@ -7,11 +7,11 @@ WHITE = (255, 255, 255)
 
 class Input_area:
     """
-    класс пол€ ввода
-    geometry - координаты - объект класса Rect
-    is_active - активен ли ввод
-    text - текст строки
-    color - цвет
+    input box class
+    geometry - coordinates - object of class Rect
+    is_active - whether input is active
+    text - text string
+    colour - colour
     """
     def __init__ (self, start_x, start_y, width, height):
         self.geometry = pygame.Rect(start_x, start_y, width, height)
@@ -29,16 +29,16 @@ class Input_area:
 
 class Project:
     """
-    класс программы
-    WIDTH - ширина экрана
-    HEIGHT - высота экрана
-    black_screen_x - координата x левого и правого краЄв чЄрного экрана
-    black_screen_y - координата y верхнего и нижнего краЄв чЄрного экрана
-    is_scalar_field - визуализируетс€ ли скал€рное поле
-    moving_object - двигаетс€ ли объект
-    screen - экран
-    input_area - область ввода 
-    start_position - точка откуда двтжетс€ объект
+    program class
+    WIDTH - screen width
+    HEIGHT - screen height
+    black_screen_x - x coordinate of the left and right edges of the black screen
+    black_screen_y - y-coordinate of top and bottom edges of black screen
+    is_scalar_field - whether the scalar field is rendered
+    moving_object - whether an object is moving
+    screen - screen
+    input_area - input area
+    start_position - point from where the object moves
     """
 
     def __init__ (self, WIDTH, HEIGHT, black_screen_x, black_screen_y):
