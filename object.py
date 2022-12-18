@@ -15,48 +15,49 @@ class Object:
     priority - priority of access to the object
     """
 
-    def __init__ (self, formula, x, y, heigth, width):
+    def __init__ (self, formula, x, y, height, width):
         """
         Constructor
         """
 
         self.x = x
         self.y = y
-        self.mask_array = self.make_mask_array(formula, heigth, width)
+        self.mask_array = self.make_mask_array(formula, height, width)
         self.priority = 1
         self.approx_circles = []
-        self.make_approximation(heigth, width, 0, 0)
+        self.make_approximation(height, width, 0, 0)
        
-    def make_mask_array(self, formula, heigth, width):
+    def make_mask_array(self, formula, height, width):
         
-        mask_array = numpy.zeros((heigth, width))
+        mask_array = numpy.zeros((height, width))
         
-        half_of_y = int(heigth / 2)
+        half_of_y = int(height / 2)
         half_of_x = int(width / 2)
 
         for y in range(-1 * half_of_y, half_of_y):
             for x in range(-1 * half_of_x, half_of_x):
-                if (is_in_figure(formula, x, y, 0, 0)<=0):
+                if is_in_figure(formula, x, y, 0, 0) <= 0:
                     mask_array[y][x] = 1
-
+        #print(len(mask_array), len(mask_array[0]))
+        #print(mask_array)
         return mask_array
 
 
-    def make_approximation (self, heigth, width, start_x, start_y):
+    def make_approximation (self, height, width, start_x, start_y):
         """
         The function takes the first step of recursion
         """
-        x, y, mass = self.find_center_of_mass(start_x, start_y, width, heigth)
+        x, y, mass = self.find_center_of_mass(start_x, start_y, width, height)
         
         if (self.is_point_in_unfilled_space(x, y) == True):
-            circle = Circle(x - self.x, y - self.y, self.find_radius(x, y, min(width, heigth)))
+            circle = Circle(x - self.x, y - self.y, self.find_radius(x, y, min(width, height)))
             self.approx_circles.append(circle)
         
 
         self.recurent_part_of_make_approximation(y, x, start_x, start_y, mass)
         self.recurent_part_of_make_approximation(y, width - x, x, start_y, mass)
-        self.recurent_part_of_make_approximation(heigth - y, x, start_x, y, mass)
-        self.recurent_part_of_make_approximation(heigth - y, width - x, x, y, mass)
+        self.recurent_part_of_make_approximation(height - y, x, start_x, y, mass)
+        self.recurent_part_of_make_approximation(height - y, width - x, x, y, mass)
 
         return
 
@@ -174,13 +175,15 @@ class All_objects:
     width - screen width
     height - screen height
     """
-    def __init__ (self, height, width):
+    def __init__ (self, height, width, y, x):
         """
         Constructor
         """
         self.height = height
         self.width = width
         self.all_objects = []
+        self.y = y
+        self.x = x
 
 
     def find_best_object (self, x, y):
@@ -189,13 +192,19 @@ class All_objects:
 
         """
         index_of_best_priority = -1
+        best_priority = 1e9
         for index in range(len(self.all_objects)):
-            best_priority = 1e9
+            #print(index)
+            #best_priority = 1e9
             index_of_best_priority = -1
-            if (self.all_objects[index].mask_array[y - self.all_objects[index].y][x - self.all_objects[index].x] == 1 and self.all_objects[index].priority < best_priority):
+            print(self.all_objects[index].mask_array[(-1)*self.y + y - self.all_objects[index].y][(-1)*self.x + x - self.all_objects[index].x])
+            #print(self.all_objects[index].mask_array)
+            if self.all_objects[index].mask_array[(-1)*self.y + y - self.all_objects[index].y][(-1)*self.x + x - self.all_objects[index].x] == 1 \
+                    and self.all_objects[index].priority < best_priority:
+                print("change of best priority")
                 index_of_best_priority = index
                 best_priority = self.all_objects[index].priority
-        
+        #print(index_of_best_priority)
         return index_of_best_priority
                
 
@@ -203,7 +212,7 @@ class All_objects:
         """
         Adding an object to an array
         """
-        self.all_objects.append(Object(formula, x ,y, self.height, self.width))
+        self.all_objects.append(Object(formula, x, y, self.height, self.width))
         
         for current_object in self.all_objects:
             current_object.priority += 1
@@ -229,7 +238,7 @@ class All_objects:
             for current_object in self.all_objects:
                 current_object.priority += 1
     
-    def make_scalar_field (self):
+    def make_scalar_field(self):
         """
         Constructing a scalar field
         """

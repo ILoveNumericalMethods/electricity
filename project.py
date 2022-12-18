@@ -51,7 +51,9 @@ class Project:
         self.is_scalar_field = True
         self.moving_object = False
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.object_array = All_objects(self.black_screen_y[1] - self.black_screen_y[0], self.black_screen_x[1] - self.black_screen_x[0])
+        self.object_array = All_objects(self.black_screen_y[1] - self.black_screen_y[0],
+                                        self.black_screen_x[1] - self.black_screen_x[0],
+                                        self.black_screen_y[0], self.black_screen_x[0])
         self.input_area = Input_area(15, 10, 500, 32)
         self.font = pygame.font.Font(None, 32)
         self.start_position = (0, 0)
@@ -65,12 +67,15 @@ class Project:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                print("left put")
                 if self.input_area.geometry.collidepoint(event.pos):
                     self.input_area.is_active = True
 
                 elif self.black_screen_x[0] <= event.pos[0] <= self.black_screen_x[1] \
                         and self.black_screen_y[0] <= event.pos[1] <= self.black_screen_y[1]:
+                    print("on black screen")
                     if (self.object_array.find_best_object(event.pos[0], event.pos[1]) != -1):
+                        print("object")
                         self.start_position = event.pos
                         self.moving_object = True
                     
@@ -104,14 +109,14 @@ class Project:
                 elif event.key == pygame.K_BACKSPACE:
                     self.input_area.text = self.input_area.text[:-1]
                 
-                elif (event.key == pygame.K_SPACE and self.input_area.is_active != True):
+                elif event.key == pygame.K_SPACE and self.input_area.is_active != True:
                     self.is_scalar_field = not self.is_scalar_field
                     draw(self.object_array.make_scalar_field()[0], self.object_array.make_scalar_field()[1], self.is_scalar_field, self.screen, self.black_screen_x, self.black_screen_y)
 
                 else:
                     self.input_area.text += event.unicode
 
-            elif (event.key == pygame.K_SPACE):
+            elif event.key == pygame.K_SPACE:
                 self.is_scalar_field = not self.is_scalar_field
                 draw(self.object_array.make_scalar_field()[0], self.object_array.make_scalar_field()[1], self.is_scalar_field, self.screen, self.black_screen_x, self.black_screen_y)
         
