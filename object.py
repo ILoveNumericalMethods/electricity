@@ -155,7 +155,7 @@ class Object:
         The function reads the potential at a given point
         K is the normalisation constant
         """
-        K = 3
+        K = 5
         
         x = x - self.x
         y = y - self.y
@@ -235,7 +235,8 @@ class All_objects:
         Constructing a scalar field
         """
         scalar_field = numpy.empty((self.height, self.width)) 
-        
+        max_potential = 0
+
         for y in range(self.height):
             for x in range(self.width):
                 potential = 0
@@ -252,9 +253,10 @@ class All_objects:
                     potential += current_object.calculate_potential_in_that_point(x, y)
                 
                 scalar_field[y][x] = potential
+                max_potential = max(max_potential, potential)
                 #print(scalar_field[y][x], end="")
                 #print(" ", end="")
 
             #print('\n', end="")
              
-        return scalar_field
+        return (scalar_field, max_potential)
