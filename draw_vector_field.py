@@ -1,11 +1,12 @@
 import numpy
-from math import atan
+from math import atan2
 from math import cos
 from math import sin
 import pygame
 
 def draw_circle (screen, x, y, x_vector, y_vector, max_length):
-    angle = atan(y_vector / x_vector)
+    angle = atan2(y_vector , x_vector)
+
     new_vector_length = ((x_vector ** 2 + y_vector ** 2) ** 0,5 / max_length) * 10
 
     rotate_matrix = numpy.array([[cos(angle), sin(angle)],
