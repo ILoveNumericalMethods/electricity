@@ -16,10 +16,9 @@ def draw_circle (screen, x, y, x_vector, y_vector, max_length):
                                [y - (1 / 3)]])
     down_point = numpy.array([[x + 1 - (1 / 3)],
                                [y + (1 / 3)]])
-    
-    center_point *= new_vector_length
-    up_point *= new_vector_length
-    down_point *= new_vector_length
+    center_point = center_point*new_vector_length
+    up_point = up_point*new_vector_length
+    down_point = down_point*new_vector_length
 
     center_point = numpy.dot(rotate_matrix, center_point)
     up_point = numpy.dot(rotate_matrix, up_point)

@@ -51,7 +51,7 @@ class Project:
         self.is_scalar_field = True
         self.moving_object = False
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        self.object_array =  All_objects(self.black_screen_y[1] - self.black_screen_y[0], self.black_screen_x[1] - self.black_screen_x[0])
+        self.object_array = All_objects(self.black_screen_y[1] - self.black_screen_y[0], self.black_screen_x[1] - self.black_screen_x[0])
         self.input_area = Input_area(15, 10, 500, 32)
         self.font = pygame.font.Font(None, 32)
         self.start_position = (0, 0)
@@ -112,7 +112,7 @@ class Project:
 
             elif (event.key == pygame.K_SPACE):
                 self.is_scalar_field = not self.is_scalar_field
-                cocos_draw(self.object_array.make_scalar_field()[0], self.object_array.make_scalar_field()[1], self.screen, self.black_screen_x, self.black_screen_y)
+                draw(self.object_array.make_scalar_field()[0], self.object_array.make_scalar_field()[1], self.is_scalar_field, self.screen, self.black_screen_x, self.black_screen_y)
         
         return False
 
