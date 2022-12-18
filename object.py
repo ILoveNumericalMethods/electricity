@@ -2,14 +2,13 @@ import numpy
 from math import pi
 from math import cos
 from math import sin
-from trace import Trace
 from circle import Circle
 from idetify import is_in_figure
 
 class Object:
     """
     Charged body
-    formula - formula which defines the shape
+    mask_array - showing if the point in the object
     x - shift in x from 0
     y - shift in y from 0
     approx_circles - approximation of the body by balls
@@ -20,13 +19,27 @@ class Object:
         """
         Constructor
         """
-        self.formula = formula
+
         self.x = x
         self.y = y
+        self.mask_array = self.make_mask_array(formula, heigth, width)
         self.priority = 1
         self.approx_circles = []
         self.make_approximation(heigth, width, 0, 0)
        
+    def make_mask_array(self, formula, heigth, width):
+        
+        mask_array = numpy.zeros((heigth, width))
+        
+        half_of_y = int(heigth / 2)
+        half_of_x = int(width / 2)
+
+        for y in range(-1 * half_of_y, half_of_y):
+            for x in range(-1 * half_of_x, half_of_x):
+                if (is_in_figure(formula, x, y, 0, 0)):
+                    mask_array[y][x] = 1
+
+        return mask_array
 
 
     def make_approximation (self, heigth, width, start_x, start_y):
@@ -36,7 +49,7 @@ class Object:
         x, y, mass = self.find_center_of_mass(start_x, start_y, width, heigth)
         
         if (self.is_point_in_unfilled_space(x, y) == True):
-            circle = Circle(x, y, self.find_radius(x, y, min(width, heigth)))
+            circle = Circle(x - self.x, y - self.y, self.find_radius(x, y, min(width, heigth)))
             self.approx_circles.append(circle)
         
 
@@ -74,15 +87,15 @@ class Object:
         Checking to find a point in a space that has not yet been filled
         """
 
+        x = int(x - self.x)
+        y = int(y - self.y)
+        
         if (len(self.approx_circles) != 0):
             for current_circle in self.approx_circles:
-                if ((((x - current_circle.x) ** 2) + ((y - current_circle.y) ** 2)) <= (current_circle.radius ** 2)):
+                if ((x - current_circle.x) ** 2 + (y - current_circle.y) ** 2 <= current_circle.radius ** 2):
                     return False
 
-        x = x - self.x
-        y = y - self.y
-
-        if ((is_in_figure(self.formula, x, y)) == True):
+        if (self.mask_array[y][x] == 1):
             return True
 
         return False
@@ -142,7 +155,7 @@ class Object:
         The function reads the potential at a given point
         K is the normalisation constant
         """
-        K = 1
+        K = 3
         
         x = x - self.x
         y = y - self.y
@@ -180,9 +193,9 @@ class All_objects:
         for index in range(len(self.all_objects)):
             best_priority = 1e9
             index_of_best_priority = -1
-            if (is_in_figure(self.all_object[index].formula, x - self.all_object[index].x, y - self.all_object[index].y) == 1 and self.all_object[index].priority < best_priority):
+            if (self.all_objects[index].mask_array[y - self.all_objects[index].y][x - self.all_objects[index].x] == 1 and self.all_objects[index].priority < best_priority):
                 index_of_best_priority = index
-                best_priority = self.all_object[index].priority
+                best_priority = self.all_objects[index].priority
         
         return index_of_best_priority
                
@@ -191,7 +204,7 @@ class All_objects:
         """
         Adding an object to an array
         """
-        self.all_objects.append(Object(formula, x ,y, self.width, self.height))
+        self.all_objects.append(Object(formula, x ,y, self.height, self.width))
         
         for current_object in self.all_objects:
             current_object.priority += 1
@@ -229,12 +242,19 @@ class All_objects:
 
                 for current_object in self.all_objects:
                     
-                    if (is_in_figure(current_object.formula, x - current_object.x, y - current_object.y) == 1):
+                    if (current_object.mask_array[y - current_object.y][x - current_object.x] == 1):
                         scalar_field[y][x] = -1
+                        #print(-1, end="")
+                        #print(" ", end="")
                         break
 
+                     
                     potential += current_object.calculate_potential_in_that_point(x, y)
                 
                 scalar_field[y][x] = potential
+                #print(scalar_field[y][x], end="")
+                #print(" ", end="")
 
+            #print('\n', end="")
+             
         return scalar_field

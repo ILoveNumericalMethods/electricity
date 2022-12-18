@@ -69,9 +69,12 @@ class Project:
                 self.input_area.is_active = True
 
             elif(event.pos[0] >= self.black_screen_x[0] and event.pos[0] <= self.black_screen_x[1] and event.pos[1] >= self.black_screen_y[0] and event.pos[1] <= self.black_screen_y[1]):
-                self.start_position = event.pos
-                self.moving_object = True
+                if (self.object_array.find_best_object(event.pos[0], event.pos[1]) != -1):
+                    self.start_position = event.pos
+                    self.moving_object = True
+                    
                 self.input_area.is_active = False
+
             else:
                 self.input_area.is_active = False
 
@@ -95,18 +98,20 @@ class Project:
                 elif event.key == pygame.K_BACKSPACE:
                     self.input_area.text = self.input_area.text[:-1]
                 
-
-
+                elif (event.key == pygame.K_SPACE and self.input_area.is_active != True):
+                    self.is_scalar_field = not self.is_scalar_field
+                    print (self.is_scalar_field)
+                    draw(self.object_array.make_scalar_field(), self.is_scalar_field, self.screen, self.black_screen_x, self.black_screen_y)
 
                 else:
                     self.input_area.text += event.unicode
-        return False
 
-    """
-                elif (event.key == pygame.K_SPACE):
-                    self.is_scalar_field = not self.is_scalar_field
-                    draw(self.object_array.make_scalar_field(), self.is_scalar_field, self.screen, self.black_screen_x, self.black_screen_y)
-                """
+            elif (event.key == pygame.K_SPACE):
+                self.is_scalar_field = not self.is_scalar_field
+                print (self.is_scalar_field)
+                draw(self.object_array.make_scalar_field(), self.is_scalar_field, self.screen, self.black_screen_x, self.black_screen_y)
+        
+        return False
 
 
     def render_text(self):
