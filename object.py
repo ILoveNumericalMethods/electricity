@@ -36,7 +36,7 @@ class Object:
 
         for y in range(-1 * half_of_y, half_of_y):
             for x in range(-1 * half_of_x, half_of_x):
-                if (is_in_figure(formula, x, y, 0, 0)):
+                if (is_in_figure(formula, x, y, 0, 0)<=0):
                     mask_array[y][x] = 1
 
         return mask_array
@@ -164,7 +164,6 @@ class Object:
 
         for current_circle in self.approx_circles:
             potential += K * current_circle.charge / (((current_circle.x - x) ** 2 + (current_circle.y - y) ** 2) ** 0.5)
-        
         return potential
     
 
@@ -242,15 +241,20 @@ class All_objects:
                 potential = 0
 
                 for current_object in self.all_objects:
-                    
-                    if (current_object.mask_array[y - current_object.y][x - current_object.x] == 1):
-                        scalar_field[y][x] = -1
+                    if current_object.mask_array[y - current_object.y][x - current_object.x] == 1:
+                        #scalar_field[y][x] = -1
+                        potential = -1
                         #print(-1, end="")
                         #print(" ", end="")
                         break
+                for current_object in self.all_objects:
+
+                     if potential != -1:
+                         potential += current_object.calculate_potential_in_that_point(x, y)
+
 
                      
-                    potential += current_object.calculate_potential_in_that_point(x, y)
+                    #potential += current_object.calculate_potential_in_that_point(x, y)
                 
                 scalar_field[y][x] = potential
                 max_potential = max(max_potential, potential)
@@ -258,5 +262,6 @@ class All_objects:
                 #print(" ", end="")
 
             #print('\n', end="")
+
              
         return (scalar_field, max_potential)

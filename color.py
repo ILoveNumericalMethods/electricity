@@ -21,16 +21,19 @@ def coloring (arr, max_el):
     returns a three dimensional array coloured with the gradient
     """
 
-    coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype = int)
-    max_el = -1
-    for x in range (arr.shape[0]):
+    coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype=int)
+    #max_el = -1
+    """for x in range (arr.shape[0]):
         for y in range (arr.shape[1]):
             if arr[x][y]>max_el:
-                max_el = arr[x][y]
+                max_el = arr[x][y]"""
     for x in range (arr.shape[0]):
-        for y in range (arr.shape[1]):
-            if arr[x][y]>-1:
-                color1 = fadeColor(c1,c2, min(arr[x][y]*1000/max_el, 1))
+        for y in range(arr.shape[1]):
+            if arr[x][y] > -1 and arr[x][y] <= max_el:
+                if max_el != 0:
+                    color1 = fadeColor(c1, c2, min(arr[x][y]/max_el, 1))
+                else:
+                    color1 = fadeColor(c1, c2, 0)
                 r = int(color1[1:3], 16)
                 g = int(color1[3:5], 16)
                 bl = int(color1[5::], 16)

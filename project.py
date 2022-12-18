@@ -42,7 +42,7 @@ class Project:
     start_position - point from where the object moves
     """
 
-    def __init__ (self, WIDTH, HEIGHT, black_screen_x, black_screen_y):
+    def __init__(self, WIDTH, HEIGHT, black_screen_x, black_screen_y):
 
         self.black_screen_x = black_screen_x
         self.black_screen_y = black_screen_y
@@ -64,11 +64,12 @@ class Project:
             return True
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if (event.button == 1):
+            if event.button == 1:
                 if self.input_area.geometry.collidepoint(event.pos):
                     self.input_area.is_active = True
 
-                elif(event.pos[0] >= self.black_screen_x[0] and event.pos[0] <= self.black_screen_x[1] and event.pos[1] >= self.black_screen_y[0] and event.pos[1] <= self.black_screen_y[1]):
+                elif self.black_screen_x[0] <= event.pos[0] <= self.black_screen_x[1] \
+                        and self.black_screen_y[0] <= event.pos[1] <= self.black_screen_y[1]:
                     if (self.object_array.find_best_object(event.pos[0], event.pos[1]) != -1):
                         self.start_position = event.pos
                         self.moving_object = True

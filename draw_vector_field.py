@@ -5,7 +5,7 @@ from math import sin
 import pygame
 
 def draw_circle (screen, x, y, x_vector, y_vector, max_length):
-    angle = atan2(y_vector , x_vector)
+    angle = atan2(y_vector, x_vector)
 
     new_vector_length = ((x_vector ** 2 + y_vector ** 2) ** 0,5 / max_length) * 10
 
