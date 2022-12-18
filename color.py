@@ -22,6 +22,11 @@ def coloring (arr, max_el):
     """
 
     coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype = int)
+    max_el = -1
+    for x in range (arr.shape[0]):
+        for y in range (arr.shape[1]):
+            if arr[x][y]>max_el:
+                max_el = arr[x][y]
     for x in range (arr.shape[0]):
         for y in range (arr.shape[1]):
             if arr[x][y]>-1:
