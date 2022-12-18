@@ -30,7 +30,7 @@ def coloring (arr):
     for x in range (arr.shape[0]):
         for y in range (arr.shape[1]):
             if arr[x][y]>-1:
-                color1 = fadeColor(c1,c2, arr[x][y]*1000/max_el)
+                color1 = fadeColor(c1,c2, min(arr[x][y]*1000/max_el, 1000))
                 r = int(color1[1:3], 16)
                 g = int(color1[3:5], 16)
                 bl = int(color1[5::], 16)
