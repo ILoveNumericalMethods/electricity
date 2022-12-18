@@ -4,7 +4,7 @@ import numpy as np
 c1='#00FFFF' #blue
 c2='#EE82EE' #purple
 
-def fadeColor(c1,c2,mix=0): #создаёт линейную интерполяцию от цвета с1 до цвета с2
+def fadeColor(c1,c2,mix=0): 
     assert len(c1)==len(c2)
     assert mix>=0 and mix<=1, 'mix='+str(mix)
     rgb1=np.array([int(c1[ii:ii+2],16) for ii in range(1,len(c1),2)])
@@ -13,18 +13,27 @@ def fadeColor(c1,c2,mix=0): #создаёт линейную интерполя�
     c='#'+('{:}'*3).format(*[hex(a)[2:].zfill(2) for a in rgb])
     return c
 
-def coloring (arr):
+def coloring (arr, max_el):
     """
-    создаёт массив с цветами градиента из массива с интенсивностью параметра
+    creates an array with gradient colours from an array with parameter intensities
 
-    :param arr: двумерный массив с интентсивностью параметра
-    :return coloured_arr: трёхмерный массив, раскрашенный градиентом
+    accepts a two-dimensional array with the parameter intensity
+    returns a three dimensional array coloured with the gradient
     """
+
     coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype=int)
-    for x in range (arr.shape[0]):
+    #max_el = -1
+    """for x in range (arr.shape[0]):
         for y in range (arr.shape[1]):
-            if arr[x][y]>-1:
-                color1 = fadeColor(c1,c2, arr[x][y]/1000) #цвет пикселя
+            if arr[x][y]>max_el:
+                max_el = arr[x][y]"""
+    for x in range (arr.shape[0]):
+        for y in range(arr.shape[1]):
+            if arr[x][y] > -1 and arr[x][y] <= max_el:
+                if max_el != 0:
+                    color1 = fadeColor(c1, c2, min(arr[x][y]/max_el, 1))
+                else:
+                    color1 = fadeColor(c1, c2, 0)
                 r = int(color1[1:3], 16)
                 g = int(color1[3:5], 16)
                 bl = int(color1[5::], 16)
