@@ -1,6 +1,8 @@
+import numpy
 from math import pi
 from math import cos
 from math import sin
+from trace import Trace
 from circle import Circle
 from idetify import is_in_figure
 
@@ -14,7 +16,7 @@ class Object:
     priority - priority of access to the object
     """
 
-    def __init__ (self, formula, x, y, width, heigth):
+    def __init__ (self, formula, x, y, heigth, width):
         """
         Constructor
         """
@@ -22,7 +24,9 @@ class Object:
         self.x = x
         self.y = y
         self.priority = 1
+        self.approx_circles = []
         self.make_approximation(heigth, width, 0, 0)
+       
 
 
     def make_approximation (self, heigth, width, start_x, start_y):
@@ -31,8 +35,10 @@ class Object:
         """
         x, y, mass = self.find_center_of_mass(start_x, start_y, width, heigth)
         
-        if (self.is_point_in_unfilled_space(x, y) == 1):
-            self.approx_circles.append(Circle(x, y, self.find_radius(x, y, min(width, heigth))))
+        if (self.is_point_in_unfilled_space(x, y) == True):
+            circle = Circle(x, y, self.find_radius(x, y, min(width, heigth)))
+            self.approx_circles.append(circle)
+        
 
         self.recurent_part_of_make_approximation(y, x, start_x, start_y, mass)
         self.recurent_part_of_make_approximation(y, width - x, x, start_y, mass)
@@ -46,14 +52,14 @@ class Object:
         Recursive approximation of the figure with balls
         P is the coverage fraction at which the recursion stops
         """
-        P = 0.95
+        P = 0.1 / 4
         x, y, new_mass = self.find_center_of_mass(start_x, start_y, width, heigth)
         
-        if(new_mass <= mass * P):
+        if(new_mass <= mass * P or new_mass == -1):
             return
 
-        if (self.is_point_in_unfilled_space(x, y) == 1):
-            self.approx_circles.append(Circle(x, y, self.find_radius(x, y, min(width, heigth))))
+        if (self.is_point_in_unfilled_space(x, y) == True):
+            self.approx_circles.append(Circle(x - self.x, y - self.y, self.find_radius(x, y, min(width, heigth))))
 
         self.recurent_part_of_make_approximation(y, x, start_x, start_y, mass)
         self.recurent_part_of_make_approximation(y, width - x, x, start_y, mass)
@@ -67,16 +73,19 @@ class Object:
         """
         Checking to find a point in a space that has not yet been filled
         """
+
+        if (len(self.approx_circles) != 0):
+            for current_circle in self.approx_circles:
+                if ((((x - current_circle.x) ** 2) + ((y - current_circle.y) ** 2)) <= (current_circle.radius ** 2)):
+                    return False
+
         x = x - self.x
         y = y - self.y
-        if ((is_in_figure(self.formula, x, y)) != 1):
-            return 0
 
-        for current_circle in self.approx_circles:
-            if ((x - current_circle.x) ** 2 + (y - current_circle.y) ** 2 <= current_circle.radius ** 2):
-                return 0
-        
-        return 1
+        if ((is_in_figure(self.formula, x, y)) == True):
+            return True
+
+        return False
     
         
     def find_center_of_mass (self, start_x, start_y, distance_of_x, distance_of_y):
@@ -89,11 +98,15 @@ class Object:
         mass = 0
         for x in range(start_x, distance_of_x):
             for y in range(start_y, distance_of_y):
-                if ((is_in_figure(self.formula, x + self.x, y - self.y)) == 1):
+                if (self.is_point_in_unfilled_space(x, y) == True):
                     center_of_mass_x += x
                     center_of_mass_y += y
                     mass += 1
-        return center_of_mass_x / mass, center_of_mass_y / mass, mass
+
+        if (mass == 0):
+            mass = -1
+
+        return int(center_of_mass_x / mass), int(center_of_mass_y / mass), mass
 
 
     def find_radius (self, x, y, max_radius):
@@ -113,13 +126,13 @@ class Object:
             
             flag = 0
             for i in range(N):
-                if (self.is_point_in_unfilled_space(x + middle * cos(2 * pi * i / N), y + middle * sin(2 * pi * i / N)) == 1):
+               if (self.is_point_in_unfilled_space(x + middle * cos(2 * pi * i / N), y + middle * sin(2 * pi * i / N)) == True):
                     flag += 1
             
-            if (flag == N):
-                left = middle
-            else:
+            if (flag != N):
                 right = middle
+            else:
+                left = middle
         
         return right
 
@@ -163,14 +176,15 @@ class All_objects:
         Searches for the object with the highest priority
 
         """
+        index_of_best_priority = -1
         for index in range(len(self.all_objects)):
             best_priority = 1e9
-            index_of_dest_priority = -1
-            if (is_in_figure(self.all_object[index].formula, x - self.all_object[index].x, y + self.all_object[index].y) == 1 and self.all_object[index].priority < best_priority):
-                index_of_dest_priority = index
+            index_of_best_priority = -1
+            if (is_in_figure(self.all_object[index].formula, x - self.all_object[index].x, y - self.all_object[index].y) == 1 and self.all_object[index].priority < best_priority):
+                index_of_best_priority = index
                 best_priority = self.all_object[index].priority
         
-        return index_of_dest_priority
+        return index_of_best_priority
                
 
     def add_object (self, formula, x, y):
@@ -203,22 +217,24 @@ class All_objects:
             for current_object in self.all_objects:
                 current_object.priority += 1
     
-    def make_scalar_field (self, output_file):
+    def make_scalar_field (self):
         """
         Constructing a scalar field
         """
+        scalar_field = numpy.empty((self.height, self.width)) 
+        
         for y in range(self.height):
             for x in range(self.width):
                 potential = 0
 
                 for current_object in self.all_objects:
                     
-                    if (is_in_figure(current_object.formula, x - current_object.formula.x, y + current_object.formula.y) == 1):
-                        output_file.write("-1 ")
+                    if (is_in_figure(current_object.formula, x - current_object.x, y - current_object.y) == 1):
+                        scalar_field[y][x] = -1
                         break
 
                     potential += current_object.calculate_potential_in_that_point(x, y)
                 
-                output_file.write(str(potential) + " ")
+                scalar_field[y][x] = potential
 
-            output_file.write("\n")
+        return scalar_field
