@@ -5,6 +5,9 @@ from project import Project
 
 
 def main():
+    """
+    maien function of code
+    """
     project = Project(1260, 700, (15, 1215), (60, 660))
     clock = pygame.time.Clock()
 
