@@ -3,6 +3,9 @@ from draw_vector_field import draw_vector_field
 import pygame
 
 def draw (scalar_field, max_el, is_scalar_filed, screen, screen_x, screen_y):
+    """
+    maikng visualisation
+    """
     if (is_scalar_filed):
             colored_arr = coloring(scalar_field, max_el)
             for y in range(screen_y[1] - screen_y[0]):
