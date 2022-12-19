@@ -1,16 +1,25 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-c1='#00FFFF' #blue
-c2='#EE82EE' #purple
+"""
+c1 - blue
+c2 - purple
+"""
 
-def fadeColor(c1,c2,mix=0): 
-    assert len(c1)==len(c2)
-    assert mix>=0 and mix<=1, 'mix='+str(mix)
-    rgb1=np.array([int(c1[ii:ii+2],16) for ii in range(1,len(c1),2)])
-    rgb2=np.array([int(c2[ii:ii+2],16) for ii in range(1,len(c2),2)])
-    rgb=((1-mix)*rgb1+mix*rgb2).astype(int)
-    c='#'+('{:}'*3).format(*[hex(a)[2:].zfill(2) for a in rgb])
+c1 = '#00FFFF' 
+c2 = '#EE82EE' 
+
+def fadeColor(c1, c2, mix = 0): 
+    """
+    creates gradient
+    """
+
+    assert len(c1) ==l en(c2)
+    assert mix >= 0 and mix <= 1, 'mix=' + str(mix)
+    rgb1 = np.array([int(c1 [ii:ii + 2], 16) for ii in range(1, len(c1), 2)])
+    rgb2 = np.array([int(c2 [ii:ii + 2], 16) for ii in range(1 ,len(c2), 2)])
+    rgb = ((1 - mix) * rgb1 + mix * rgb2).astype(int)
+    c = '#' + ('{:}' * 3).foc rmat(*[hex(a)[2:].zfill(2) for a in rgb])
     return c
 
 def coloring (arr, max_el):
@@ -22,11 +31,7 @@ def coloring (arr, max_el):
     """
 
     coloured_arr = np.zeros((arr.shape[0], arr.shape[1], 3), dtype=int)
-    #max_el = -1
-    """for x in range (arr.shape[0]):
-        for y in range (arr.shape[1]):
-            if arr[x][y]>max_el:
-                max_el = arr[x][y]"""
+
     for x in range (arr.shape[0]):
         for y in range(arr.shape[1]):
             if arr[x][y] > -1 and arr[x][y] <= max_el:
@@ -44,4 +49,5 @@ def coloring (arr, max_el):
                 coloured_arr[x][y][0] = 0
                 coloured_arr[x][y][1] = 0
                 coloured_arr[x][y][2] = 0
+
     return (coloured_arr)
