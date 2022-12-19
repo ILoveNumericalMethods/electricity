@@ -28,7 +28,9 @@ class Object:
         self.make_approximation(height, width, 0, 0)
        
     def make_mask_array(self, formula, height, width):
-        
+        """
+        creating array to chech if the point in the object
+        """
         mask_array = numpy.zeros((height, width))
         
         half_of_y = int(height / 2)
@@ -38,8 +40,6 @@ class Object:
             for x in range(-1 * half_of_x, half_of_x):
                 if is_in_figure(formula, x, y, 0, 0) <= 0:
                     mask_array[y][x] = 1
-        #print(len(mask_array), len(mask_array[0]))
-        #print(mask_array)
         return mask_array
 
 
@@ -170,7 +170,7 @@ class Object:
 
 class All_objects:
     """
-    All objects and working with them
+    Class of all objects and working with them
     all_objects - array of objects
     width - screen width
     height - screen height
@@ -189,22 +189,21 @@ class All_objects:
     def find_best_object (self, x, y):
         """
         Searches for the object with the highest priority
-
         """
+
         index_of_best_priority = -1
         best_priority = 1e9
         for index in range(len(self.all_objects)):
-            #print(index)
-            #best_priority = 1e9
+
             index_of_best_priority = -1
-            print(self.all_objects[index].mask_array[(-1)*self.y + y - self.all_objects[index].y][(-1)*self.x + x - self.all_objects[index].x])
-            #print(self.all_objects[index].mask_array)
+            
+
             if self.all_objects[index].mask_array[(-1)*self.y + y - self.all_objects[index].y][(-1)*self.x + x - self.all_objects[index].x] == 1 \
                     and self.all_objects[index].priority < best_priority:
-                print("change of best priority")
+                
                 index_of_best_priority = index
                 best_priority = self.all_objects[index].priority
-        #print(index_of_best_priority)
+        
         return index_of_best_priority
                
 
@@ -251,26 +250,15 @@ class All_objects:
 
                 for current_object in self.all_objects:
                     if current_object.mask_array[y - current_object.y][x - current_object.x] == 1:
-                        #scalar_field[y][x] = -1
                         potential = -1
-                        #print(-1, end="")
-                        #print(" ", end="")
                         break
+
                 for current_object in self.all_objects:
 
                      if potential != -1:
                          potential += current_object.calculate_potential_in_that_point(x, y)
 
-
-                     
-                    #potential += current_object.calculate_potential_in_that_point(x, y)
-                
                 scalar_field[y][x] = potential
                 max_potential = max(max_potential, potential)
-                #print(scalar_field[y][x], end="")
-                #print(" ", end="")
 
-            #print('\n', end="")
-
-             
         return (scalar_field, max_potential)
