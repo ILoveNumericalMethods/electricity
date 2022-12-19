@@ -1,6 +1,4 @@
 import pygame
-from draw import draw
-from object import Object
 from project import Project
 
 
@@ -13,15 +11,13 @@ def main():
 
     done = False
 
-
     while not done:
-        
+
         for event in pygame.event.get():
-            
             done = project.handle_event(event)
-            
+
         project.render_text()
-            
+
         pygame.display.flip()
         clock.tick(30)
 
